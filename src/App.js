@@ -34,13 +34,17 @@ function App() {
         })
   }, [])
 
+  //const rutaServidor = "";
+  const rutaServidor = "/proyecto-final";
+
   return (
     <div className="App">
+      
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
-          <Route path='/inicio' element={<Inicio />} />
-          <Route path='/card' element={<CardsPage />} />
+          <Route path={rutaServidor} element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path={rutaServidor + '/inicio'} element={<Inicio />} />
+          <Route path={rutaServidor + '/card'} element={<CardsPage />} />
         </Routes>
       </BrowserRouter>
     </div>

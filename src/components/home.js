@@ -65,7 +65,8 @@ const Home = (props) => {
   };
 
   return (
-    <div className="container">
+    <div className='login-page'>
+      <div className="container">
       <div className="main">
         <input type="checkbox" id="chk" aria-hidden="true" />
 
@@ -128,6 +129,7 @@ const Home = (props) => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

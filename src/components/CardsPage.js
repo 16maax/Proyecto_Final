@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Card, Carousel } from 'react-bootstrap';
-import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
-import './CardsPage.css'; // Asegúrate de importar el archivo CSS
+import React, { useState, useEffect } from 'react';
+import { Button, Modal, Form, Card, Carousel, Spinner } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import './CardsPage.css';
 
 const MyButtonWithModal = () => {
   const [show, setShow] = useState(false);
@@ -14,6 +15,36 @@ const MyButtonWithModal = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const apiKey = 'b088937ba25a9ea6102c07d0f7247e41'; // Cambia a tu API Key válida
+  const lat = 21.88234; // Latitud de ejemplo
+  const lon = -102.28259; // Longitud de ejemplo
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      try {
+        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
+          params: {
+            lat: lat,
+            lon: lon,
+            appid: apiKey,
+            units: 'metric',
+          },
+        });
+        setWeatherData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, [apiKey, lat, lon]);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -21,7 +52,7 @@ const MyButtonWithModal = () => {
     const newCard = {
       images: [image1, image2, image3],
       title,
-      description
+      description,
     };
 
     if (currentCardIndex !== null) {
@@ -155,6 +186,29 @@ const MyButtonWithModal = () => {
             </Card.Body>
           </Card>
         ))}
+      </div>
+
+      <div className="weather-card-container">
+        {loading ? (
+          <Spinner animation="border" />
+        ) : error ? (
+          <p>Error: {error.message}</p>
+        ) : weatherData ? (
+          <Card className="weather-card">
+            <Card.Body>
+              <Card.Title>Weather Information</Card.Title>
+              <Card.Text>
+                <strong>Temperature:</strong> {weatherData.main.temp}°C
+              </Card.Text>
+              <Card.Text>
+                <strong>Weather:</strong> {weatherData.weather[0].description}
+              </Card.Text>
+              <Card.Text>
+                <strong>Humidity:</strong> {weatherData.main.humidity}%
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        ) : null}
       </div>
     </div>
   );
